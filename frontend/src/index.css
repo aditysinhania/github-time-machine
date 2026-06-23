@@ -1,0 +1,82 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root.dark {
+    /* GitHub/Linear/Vercel-inspired dark palette */
+    --background: 222 21% 7%;          /* #0d1117 */
+    --foreground: 213 31% 91%;         /* #e6edf3 */
+
+    --card: 222 17% 11%;               /* #161b22 */
+    --card-foreground: 213 31% 91%;
+
+    --popover: 222 17% 11%;
+    --popover-foreground: 213 31% 91%;
+
+    --primary: 262 83% 58%;            /* violet-600 #7c3aed */
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 217 19% 18%;          /* #21262d */
+    --secondary-foreground: 213 31% 91%;
+
+    --muted: 217 19% 18%;
+    --muted-foreground: 215 14% 56%;   /* #8b949e */
+
+    --accent: 199 89% 48%;             /* sky-500 #0ea5e9 */
+    --accent-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;          /* #ef4444 */
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 217 19% 22%;             /* #30363d */
+    --input: 217 19% 22%;
+    --ring: 262 83% 58%;
+
+    --radius: 0.75rem;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: hsl(var(--card));
+}
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(215 14% 30%);
+}
+
+/* Utility for gradient text */
+.gradient-text {
+  background: linear-gradient(90deg, #7c3aed, #0ea5e9);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.skeleton-pulse {
+  background: linear-gradient(90deg, hsl(var(--card)) 25%, hsl(var(--secondary)) 50%, hsl(var(--card)) 75%);
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}

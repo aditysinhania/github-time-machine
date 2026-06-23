@@ -1,0 +1,55 @@
+# Render Blueprint — deploys the full GitHub Time Machine stack
+# Usage: connect this repo on https://render.com/blueprints and it
+# will provision all three services + the database automatically.
+
+databases:
+  - name: gtm-postgres
+    plan: free
+    databaseName: github_time_machine
+    user: gtm_user
+
+services:
+  # ── Backend API ──────────────────────────────────────────────
+  - type: web
+    name: gtm-backend
+    runtime: docker
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    plan: starter
+    healthCheckPath: /ping
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase:
+          name: gtm-postgres
+          property: connectionString
+      - key: ENVIRONMENT
+        value: production
+      - key: REPO_CLONE_DIR
+        value: /tmp/repos
+      - key: AI_PROVIDER
+        value: gemini
+      - key: GEMINI_API_KEY
+        sync: false        # set manually in Render dashboard (secret)
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: GITHUB_TOKEN
+        sync: false
+      - key: SECRET_KEY
+        generateValue: true
+      - key: CORS_ORIGINS
+        value: https://gtm-frontend.onrender.com
+
+  # ── Frontend (static site) ───────────────────────────────────
+  - type: web
+    name: gtm-frontend
+    runtime: static
+    buildCommand: cd frontend && npm install && npm run build
+    staticPublishPath: ./frontend/dist
+    envVars:
+      - key: VITE_API_URL
+        value: https://gtm-backend.onrender.com/api/v1
+    routes:
+      # SPA fallback so React Router handles client-side routes
+      - type: rewrite
+        source: /*
+        destination: /index.html

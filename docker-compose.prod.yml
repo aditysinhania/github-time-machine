@@ -1,0 +1,34 @@
+# Production overrides. Use alongside the base file:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+#
+# Differences from docker-compose.yml:
+#   - No source-code volume mounts (hot-reload off, image is the source of truth)
+#   - uvicorn runs without --reload, with multiple workers
+#   - pgAdmin and the dev profile are not started
+#   - restart policy is always (vs unless-stopped)
+
+services:
+  db:
+    restart: always
+    ports: []  # don't expose 5432 publicly in production
+
+  backend:
+    restart: always
+    environment:
+      ENVIRONMENT: production
+    volumes:
+      - repo_clones:/tmp/repos   # keep only the clone cache, drop the source mount
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --workers 4
+    deploy:
+      resources:
+        limits:
+          cpus: "1.5"
+          memory: 1.5G
+
+  frontend:
+    restart: always
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 256M
