@@ -17,22 +17,23 @@ class Settings(BaseSettings):
     GITHUB_TOKEN: str = ""
 
     # AI
-    AI_PROVIDER: str = "gemini"  # "gemini" or "openai"
+    AI_PROVIDER: str = "groq"  # "gemini" or "openai"
     GEMINI_API_KEY: str = ""
     OPENAI_API_KEY: str = ""
+    GROQ_API_KEY: str = ""
 
     # App
     SECRET_KEY: str = "dev-secret-change-in-prod"
     ENVIRONMENT: str = "development"
     REPO_CLONE_DIR: str = "/tmp/repos"
-    MAX_COMMITS: int = 10000
+    MAX_COMMITS: int = 1000
     CORS_ORIGINS: str = "http://localhost:5173,http://localhost:3000"
 
     @field_validator("AI_PROVIDER")
     @classmethod
     def validate_ai_provider(cls, v: str) -> str:
-        if v not in ("gemini", "openai"):
-            raise ValueError("AI_PROVIDER must be 'gemini' or 'openai'")
+        if v not in ("gemini", "openai", "groq"):
+            raise ValueError("AI_PROVIDER must be 'gemini' or 'openai' or 'groq'")
         return v
 
     @property
